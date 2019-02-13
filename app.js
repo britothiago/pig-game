@@ -105,7 +105,7 @@ function hold() {
 }
 
 function winner(activePlayer){
-    if (scores[activePlayer] >= 11) {
+    if (scores[activePlayer] >= 100) {
         document.querySelector('#name-' + activePlayer).textContent = 'VENCEDOR';
         limparDados();
         document.querySelector('.player-'+ [activePlayer] +'-panel').classList.remove('active');    
