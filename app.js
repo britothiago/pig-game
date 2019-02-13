@@ -26,13 +26,29 @@ function newGame(){
     document.querySelector('#score-1').textContent = 0;
     document.querySelector('#current-0').textContent = 0;
     document.querySelector('#current-1').textContent = 0;
+    limparDados();
+    document.querySelector('.btn-roll').style.display = 'block';
+    document.querySelector('.btn-hold').style.display = 'block';
+    document.querySelector('#name-0').textContent = 'Jogador 1';
+    document.querySelector('.player-0-panel').classList.add('active');
+    document.querySelector('.player-1-panel').classList.remove('active');
+    document.querySelector('#name-1').textContent = 'Jogador 2';
+    activePlayer=0;
+    scores = [0,0];
+}
+
+function limparDados() {
+    document.querySelector(".dice").style.display = 'none';
 }
 
 function rollDice() {
+    document.querySelector(".dice").style.display = 'block';
     dados = Math.floor(Math.random()*6)+1;
     switch(dados) {
         case 1: 
+            roundScore = 0;
             hold();
+            limparDados();
             break;
         case 2:
             addNumber(dados);
@@ -69,23 +85,35 @@ function addNumber(dados) {
 function hold() {
     if (activePlayer === 0){
         scores[activePlayer] += roundScore;
+        const win = winner(activePlayer);
         roundScore = 0;
         document.querySelector('#current-' + activePlayer).textContent = roundScore;
         document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
         activePlayer = 1;
         player1.setAttribute('class', 'player-0-panel');
-        player2.setAttribute('class', 'player-0-panel active');
+        if (!win) player2.setAttribute('class', 'player-1-panel active');
     } else {
         scores[activePlayer] += roundScore;
+        const win = winner(activePlayer);
         roundScore = 0;
-        document.querySelector('#current-' + activePlayer).textContent = roundScore;
+        document.querySelector('#current-' + activePlayer).textContent = 0;
         document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
         activePlayer = 0;
-        player1.setAttribute('class', 'player-0-panel active');
-        player2.setAttribute('class', 'player-0-panel');
+        if (!win) player1.setAttribute('class', 'player-0-panel active');
+        player2.setAttribute('class', 'player-1-panel');
     }
 }
 
+function winner(activePlayer){
+    if (scores[activePlayer] >= 11) {
+        document.querySelector('#name-' + activePlayer).textContent = 'VENCEDOR';
+        limparDados();
+        document.querySelector('.player-'+ [activePlayer] +'-panel').classList.remove('active');    
+        document.querySelector('.btn-roll').style.display = 'none';
+        document.querySelector('.btn-hold').style.display = 'none';
+        return true;
+    }
+}
 
 //
 
