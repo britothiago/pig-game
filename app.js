@@ -1,18 +1,11 @@
-/*
-GAME RULES:
-
-- The game has 2 players, playing in rounds
-- In each turn, a player rolls a dice as many times as he whishes. Each result get added to his ROUND score
-- BUT, if the player rolls a 1, all his ROUND score gets lost. After that, it's the next player's turn
-- The player can choose to 'Hold', which means that his ROUND score gets added to his GLBAL score. After that, it's the next player's turn
-- The first player to reach 100 points on GLOBAL score wins the game
-
-*/
-let scores, roundScore, dados, activePlayer, player1, player2;
+let scores, roundScore, dados, activePlayer, player1, player2, lastNumber, numAtivo, pointMax;
 
 scores = [0,0];
 roundScore = 0;
 activePlayer = 0;
+lastNumber = 0;
+numAtivo = false;
+pointMax = 100;
 
 player1 = document.querySelector('.player-0-panel');
 player2 = document.querySelector('.player-1-panel');
@@ -20,6 +13,12 @@ player2 = document.querySelector('.player-1-panel');
 document.querySelector('.btn-roll').addEventListener('click', rollDice);
 document.querySelector('.btn-new').addEventListener('click', newGame);
 document.querySelector('.btn-hold').addEventListener('click', hold);
+document.querySelector('.btn-point').addEventListener('click', points);
+
+function points() {
+    pointMax = prompt("Insira o valor maximo de pontos");
+}
+
 
 function newGame(){
     document.querySelector('#score-0').textContent = 0;
@@ -34,7 +33,7 @@ function newGame(){
     document.querySelector('.player-1-panel').classList.remove('active');
     document.querySelector('#name-1').textContent = 'Jogador 2';
     activePlayer=0;
-    scores = [0,0];
+    scores = [0,false];
 }
 
 function limparDados() {
@@ -49,6 +48,7 @@ function rollDice() {
             roundScore = 0;
             hold();
             limparDados();
+            document.querySelector('.dice').src = 'dice-1.png';
             break;
         case 2:
             addNumber(dados);
@@ -71,12 +71,19 @@ function rollDice() {
             document.querySelector('#current-' + activePlayer).textContent = roundScore;
             break;
         default: 
-            addNumber(dados);
-            document.querySelector('.dice').src = 'dice-6.png'; 
-            document.querySelector('#current-' + activePlayer).textContent = roundScore;
-            break;
+            if (dados == 6 && lastNumber == 6){
+                numAtivo = true;
+                hold();
+            } else {
+                lastNumber = dados;
+                numAtivo = false;
+                addNumber(dados);
+                document.querySelector('.dice').src = 'dice-6.png'; 
+                document.querySelector('#current-' + activePlayer).textContent = roundScore;
+            }
     }
 }
+
 
 function addNumber(dados) {
     roundScore += dados;
@@ -87,6 +94,11 @@ function hold() {
         scores[activePlayer] += roundScore;
         const win = winner(activePlayer);
         roundScore = 0;
+        lastNumber = 0;
+        if (numAtivo==true) {
+            scores[activePlayer] = 0;
+            lastNumber=0;
+        }
         document.querySelector('#current-' + activePlayer).textContent = roundScore;
         document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
         activePlayer = 1;
@@ -96,6 +108,11 @@ function hold() {
         scores[activePlayer] += roundScore;
         const win = winner(activePlayer);
         roundScore = 0;
+        lastNumber = 0;
+        if (numAtivo==true) {
+            scores[activePlayer] = 0;
+            lastNumber=0;
+        }
         document.querySelector('#current-' + activePlayer).textContent = 0;
         document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
         activePlayer = 0;
@@ -105,7 +122,7 @@ function hold() {
 }
 
 function winner(activePlayer){
-    if (scores[activePlayer] >= 100) {
+    if (scores[activePlayer] >= pointMax) {
         document.querySelector('#name-' + activePlayer).textContent = 'VENCEDOR';
         limparDados();
         document.querySelector('.player-'+ [activePlayer] +'-panel').classList.remove('active');    
@@ -114,6 +131,4 @@ function winner(activePlayer){
         return true;
     }
 }
-
-//
 

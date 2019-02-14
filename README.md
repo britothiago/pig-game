@@ -22,4 +22,5 @@ Desenvolvimento com HTML, CSS e Javascript realizando toda a operação por Thia
 1. `Novo jogo` zera os placares;
 2. `Rolar dados` começa a somar a pontuação;
 3. `Passar` transfere a vez sem perder a pontuação atual
-4. `Ganha quem fizer mais ou igual a cem pontos`
+4. `Ganha quem fizer mais ou igual a cem pontos` ou os pontos inseridos
+5. O jogador perde todos os pontos armazenados caso caia uma sequência de dois números 6.
